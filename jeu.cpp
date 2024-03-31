@@ -14,12 +14,12 @@ Position::Position(int a, int b) // Créer un constructeur de la postition
     y=b;
 }
 
-bool Position::operator==(const Position &pos) const
+bool Position::operator==(const Position &pos) const // L'ajoute de la surcharge '==' pour la position
 {
     return (x==pos.x && y==pos.y);
 }
 
-bool Position::operator!=(const Position &pos) const
+bool Position::operator!=(const Position &pos) const // L'ajoute de la surcharge '!=' pour la position
 {
     return (x!=pos.x || y!=pos.y);
 }
