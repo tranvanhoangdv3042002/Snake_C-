@@ -8,7 +8,7 @@ Position::Position()
 {
 }
 
-Position::Position(int a, int b)
+Position::Position(int a, int b) // Créer un constructeur de la postition
 {
     x=a;
     y=b;
@@ -24,57 +24,57 @@ bool Position::operator!=(const Position &pos) const
     return (x!=pos.x || y!=pos.y);
 }
 
-Jeu::Jeu()
+Jeu::Jeu() // Initialiser le contructeur de la classe Jeu
 {
-    terrain = nullptr;
+    terrain = nullptr; // Type "case" en notant que le terrain est le pointeur
     largeur = 0; hauteur = 0;
-    dirSnake = DROITE;
+    dirSnake = DROITE; // Type "Direction"
 }
 
-Jeu::Jeu(const Jeu &jeu):snake(jeu.snake)
+Jeu::Jeu(const Jeu &jeu):snake(jeu.snake) // Mettre en valeur des paramètres (initialiser  avec le constructeur ayant des paramètres
 {
     largeur = jeu.largeur;
     hauteur = jeu.hauteur;
     dirSnake = jeu.dirSnake;
-    
-    if (jeu.terrain!=nullptr)
+
+    if (jeu.terrain!=nullptr) // si on le pointeur "terrain" n'est pas null_part
+    {
+        terrain = new Case[largeur*hauteur]; // On crée une tableau dunamique pour contenir les cases d'un terrain 2D de jeu
+        for (int c=0; c<largeur*hauteur; c++) // On crée un terrain 2D de jeu (pour chaque case, soit le mur soit vide)
+            terrain[c] = jeu.terrain[c];     // en notant que tout d'abord, on crée les cases sur la première ligne, et ensuite la 2e linge...
+    }                                       // (ctd, dans le sens du gauche à droite, de haut en bas)
+    else
+        terrain = nullptr; // Si le pointeur "jeu.terrain" est null_part, le terrain pointe à null_part
+}
+
+Jeu::~Jeu() // Destructeur de la classe "Jeu"
+{
+    if (terrain!=nullptr) // Il faut détruire le tableau dynamique auquel le pointeur "terrain" pointe
+        delete[] terrain; // dans le cas où le pointeur est non_null
+}
+
+Jeu &Jeu::operator=(const Jeu &jeu) // L'opération de l'affectation de la classe "Jeu"
+{
+    if (terrain!=nullptr) // On supprimera d'abord le tableau "terrain" si le le terrain est non_null
+        delete[] terrain;// ça sert à créer un nouveau terrain (on supprime l'ancien)
+
+    largeur = jeu.largeur;
+    hauteur = jeu.hauteur;
+    dirSnake = jeu.dirSnake;
+    snake = jeu.snake; // "snake" est une lise de position de chaque élement constituant le serpent (la tête, le corps)
+
+    if (jeu.terrain!=nullptr) // On va faire une affectation de le terrain de jeu si le jeu.terrain n'est pas null 
     {
         terrain = new Case[largeur*hauteur];
         for (int c=0; c<largeur*hauteur; c++)
             terrain[c] = jeu.terrain[c];
     }
     else
-        terrain = nullptr;
+        terrain = nullptr; //Sinon, le pointeur null est appliqué
+    return *this; // Retourner le pointeur actuel car on voulait retourner les valeurs de la variable de type "Jeu"
 }
 
-Jeu::~Jeu()
-{
-    if (terrain!=nullptr)
-        delete[] terrain;
-}
-
-Jeu &Jeu::operator=(const Jeu &jeu)
-{
-    if (terrain!=nullptr)
-        delete[] terrain;
-
-    largeur = jeu.largeur;
-    hauteur = jeu.hauteur;
-    dirSnake = jeu.dirSnake;
-    snake = jeu.snake;
-
-    if (jeu.terrain!=nullptr)
-    {
-        terrain = new Case[largeur*hauteur];
-        for (int c=0; c<largeur*hauteur; c++)
-            terrain[c] = jeu.terrain[c];
-    }
-    else
-        terrain = nullptr;
-    return *this;
-}
-
-bool Jeu::init()
+bool Jeu::init() //Initialiser le "Jeu" en utilisant la fonction membre
 {
 	int x, y;
 	// list<Position>::iterator itSnake;
@@ -100,25 +100,25 @@ bool Jeu::init()
 	largeur = 20;
 	hauteur = 15;
 
-	terrain = new Case[largeur*hauteur];
+	terrain = new Case[largeur*hauteur]; // Un nouveau terrain sera défini par le tableau dynamique
 
-	for(y=0;y<hauteur;++y)
+	for(y=0;y<hauteur;++y) 
 		for(x=0;x<largeur;++x)
             if (terrain_defaut[y][x]=='#')
-                terrain[y*largeur+x] = MUR;
+                terrain[y*largeur+x] = MUR; // Pour créer le MUR et le VIDE par défaut
             else
                 terrain[y*largeur+x] = VIDE;
 
-    int longueurSerpent = 5;
-    snake.clear();
+    int longueurSerpent = 5; // Définir longueur initiale du serpent
+    snake.clear(); // Redémarrer le serpent initiale
 
-    Position posTete;
+    Position posTete; // Position intiale par défaut 
     posTete.x = 15;
-    posTete.y = 8; 
+    posTete.y = 8;
 	for (int i=0; i<longueurSerpent; i++)
     {
-        snake.push_back(posTete);
-        posTete.x--;
+        snake.push_back(posTete); // Définir les positions du serpent (en diminuant une case suivant x
+        posTete.x--;              // lorsque l'on rajouter un élément du corps du serpent)
     }
 
     return true;
@@ -132,8 +132,10 @@ void Jeu::evolue()
     int depX[] = {-1, 1, 0, 0};
     int depY[] = {0, 0, -1, 1};
 
-    posTest.x = snake.front().x + depX[dirSnake];
-    posTest.y = snake.front().y + depY[dirSnake];
+    posTest.x = snake.front().x + depX[dirSnake]; // La position x de la tête augmente/diminue 1 case lorsque 
+                                            //la direction du serpent déplace à droite/ à gauche resp (rien de changer la psotion y)
+    posTest.y = snake.front().y + depY[dirSnake];//La position y de la tête augmente/diminue 1 case lorsque 
+                                            //la direction du serpent déplace en bas/ en haut resp (rien de changer la psotion x)
 
     if (posValide(posTest))
     {
