@@ -63,7 +63,7 @@ Jeu &Jeu::operator=(const Jeu &jeu) // L'opération de l'affectation de la class
     dirSnake = jeu.dirSnake;
     snake = jeu.snake; // "snake" est une lise de position de chaque élement constituant le serpent (la tête, le corps)
 
-    if (jeu.terrain!=nullptr) // On va faire une affectation de le terrain de jeu si le jeu.terrain n'est pas null 
+    if (jeu.terrain!=nullptr) // On va faire une affectation de le terrain de jeu si le jeu.terrain n'est pas null
     {
         terrain = new Case[largeur*hauteur];
         for (int c=0; c<largeur*hauteur; c++)
@@ -102,7 +102,7 @@ bool Jeu::init() //Initialiser le "Jeu" en utilisant la fonction membre
 
 	terrain = new Case[largeur*hauteur]; // Un nouveau terrain sera défini par le tableau dynamique
 
-	for(y=0;y<hauteur;++y) 
+	for(y=0;y<hauteur;++y)
 		for(x=0;x<largeur;++x)
             if (terrain_defaut[y][x]=='#')
                 terrain[y*largeur+x] = MUR; // Pour créer le MUR et le VIDE par défaut
@@ -112,7 +112,7 @@ bool Jeu::init() //Initialiser le "Jeu" en utilisant la fonction membre
     int longueurSerpent = 5; // Définir longueur initiale du serpent
     snake.clear(); // Redémarrer le serpent initiale
 
-    Position posTete; // Position intiale par défaut 
+    Position posTete; // Position intiale par défaut
     posTete.x = 15;
     posTete.y = 8;
 	for (int i=0; i<longueurSerpent; i++)
@@ -132,12 +132,13 @@ void Jeu::evolue()
     int depX[] = {-1, 1, 0, 0};
     int depY[] = {0, 0, -1, 1};
 
-    posTest.x = snake.front().x + depX[dirSnake]; // La position x de la tête augmente/diminue 1 case lorsque 
+    posTest.x = snake.front().x + depX[dirSnake]; // La position x de la tête augmente/diminue 1 case lorsque
                                             //la direction du serpent déplace à droite/ à gauche resp (rien de changer la psotion y)
-    posTest.y = snake.front().y + depY[dirSnake];//La position y de la tête augmente/diminue 1 case lorsque 
+    posTest.y = snake.front().y + depY[dirSnake];//La position y de la tête augmente/diminue 1 case lorsque
                                             //la direction du serpent déplace en bas/ en haut resp (rien de changer la psotion x)
 
-    if (posValide(posTest))
+    if (posValide(posTest)) // S'il n'y a pas de collision avec le corps du serpent ou les murs et le serpent est
+                        //dans la zône de terrain, on supprimera la queue du serpent et on rajoute la tête pour le déplacement
     {
         snake.pop_back();
         snake.push_front(posTest);
@@ -146,41 +147,43 @@ void Jeu::evolue()
 
 int Jeu::getNbCasesX() const
 {
-    return largeur;
+    return largeur;// Obtenir la largeur du terrain équivalente au nombre de cases suivant x
+}
 }
 
 int Jeu::getNbCasesY() const
 {
-    return hauteur;
+    return hauteur;  // Obtenir la hauteur du terrain équivalente au nombre de cases suivant y
 }
 
 Case Jeu::getCase(const Position &pos) const
 {
-    assert(pos.x>=0 && pos.x<largeur && pos.y>=0 && pos.y<hauteur);
+    assert(pos.x>=0 && pos.x<largeur && pos.y>=0 && pos.y<hauteur); // Retouner le case pointé soit MUR soit VIDe
     return terrain[pos.y*largeur+pos.x];
 }
 
 const list<Position> &Jeu::getSnake() const
 {
-    return snake;
+    return snake; // Obtenir la liste d la position des éléments du serpent
 }
 
 bool Jeu::posValide(const Position &pos) const
 {
     if (pos.x>=0 && pos.x<largeur && pos.y>=0 && pos.y<hauteur
-        && terrain[pos.y*largeur+pos.x]==VIDE)
+        && terrain[pos.y*largeur+pos.x]==VIDE)// La condition de déplacement  du serpent
+        // il faut que le serpent dépalce sur la zône vide ( pas de mur) et sur le terrain de l'éceran
     {
         list<Position>::const_iterator itSnake;
         itSnake = snake.begin();
-        while (itSnake!=snake.end() && *itSnake!=pos)
+        while (itSnake!=snake.end() && *itSnake!=pos) // Condition de bloquer le serpent : la tête touche le corps
             itSnake++;
-        return (itSnake==snake.end());
-    }
+        return (itSnake==snake.end()); // Si itSnake == snake.end, ctd, la tête ne touche pas le corps pour la nouvelle position
+    }                                   // Sinon, pour le nouveau déplacement, la tête va toucher le corps ==> Le serpent est ploqué
     else
         return false;
 }
 
 void Jeu::setDirection(Direction dir)
 {
-    dirSnake = dir;
+    dirSnake = dir; // Obtenir la direction pour l'élément quelconque du serpent
 }
