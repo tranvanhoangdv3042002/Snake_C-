@@ -87,3 +87,14 @@ void SnakeWindow::handleTimer()  // Mettre a jour le serpent (la position)
     jeu.evolue();
     update();
 }
+void SnakeWindow::handleButtonAjout()
+{
+    jeu.ajoutMur();
+    update();
+}
+
+void SnakeWindow::handleButtonSuppr()
+{
+    jeu.suppressionMur();
+    update();
+}
