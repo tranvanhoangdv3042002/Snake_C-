@@ -18,6 +18,20 @@ class SnakeWindow : public QFrame
   protected:
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *);
+    void handleButtonAjout();
+    void handleButtonSuppr();
+};
+class SnakeButton : public QPushButton
+{
+  public:
+    SnakeButton(QWidget *pParent=0):QPushButton(pParent) {}
+
+  protected:
+    void keyPressEvent(QKeyEvent *e)
+    {
+        if (parent()!=NULL)
+            QCoreApplication::sendEvent(parent(), e);
+    }
 };
 
 #endif
