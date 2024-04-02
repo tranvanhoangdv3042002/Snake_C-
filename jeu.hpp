@@ -38,17 +38,19 @@ class Jeu
     int getNbCasesX() const;
     int getNbCasesY() const;
 
-    // Retourne la case à une position donnée
+    // Retourne la case Ã  une position donnÃ©e
     Case getCase(const Position &) const;
 
-    // Retourne la liste des éléments du serpent en lecture seule
+    // Retourne la liste des Ã©lÃ©ments du serpent en lecture seule
     const std::list<Position> &getSnake() const;
 
-    // Indique si la case à une position donnée existe et est libre
+    // Indique si la case Ã  une position donnÃ©e existe et est libre
     bool posValide(const Position &) const;
 
     // Modifie la direction
     void setDirection(Direction);
+    void ajoutMur();
+    void suppressionMur();
 };
 
 #endif
