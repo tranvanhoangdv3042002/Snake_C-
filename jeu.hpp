@@ -1,9 +1,9 @@
 #ifndef JEU_HPP
 #define JEU_HPP
-
+#include <vector>
 #include <list>
 
-typedef enum {VIDE, MUR} Case;
+typedef enum {VIDE, MUR, FRUIT} Case;
 typedef enum {GAUCHE, DROITE, HAUT, BAS} Direction;
 
 class Position
@@ -19,9 +19,12 @@ class Position
 class Jeu
 {
   protected:
-    Case *terrain;
+    //Case *terrain;
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
-    std::list<Position> snake;
+   std::list<Position> snake;
+   // std::vector<int> vecteurVide;
+    //int numFruit;
+
     //std::list<posVide> position;
     Direction dirSnake;
 
@@ -29,15 +32,18 @@ class Jeu
     Jeu();
     Jeu(const Jeu &);
     ~Jeu();
-
+   Case *terrain;
     Jeu &operator=(const Jeu &);
 
     bool init();
     void evolue();
+    std::vector<int> vecteurVide;
+    int numFruit;
 
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
     int getNbCasesY() const;
+
 
     // Retourne la case à une position donnée
     Case getCase(const Position &) const;
@@ -53,6 +59,10 @@ class Jeu
 
     void ajoutMur();
     void suppressionMur();
+
+    //
+
+
 };
 
 #endif
