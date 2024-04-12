@@ -25,7 +25,7 @@ SnakeWindow::SnakeWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pParent
         cout<<"Impossible d'ouvrir mur.bmp"<<endl;
         exit(-1);
     }
-        if (pixmapFruit.load("./data/orange.png")==false)
+    if (pixmapFruit.load("./data/orange.png")==false)
     {
         cout<<"Impossible d'ouvrir orange.png"<<endl;
         exit(-1);
@@ -74,8 +74,10 @@ void SnakeWindow::paintEvent(QPaintEvent *)
         for (pos.x=0;pos.x<jeu.getNbCasesX();pos.x++)
 			if (jeu.getCase(pos)==MUR)
                 painter.drawPixmap(pos.x*largeurCase, pos.y*hauteurCase+decalageY, pixmapMur);
-
-    // Dessine le serpent
+            else if (jeu.getCase(pos)==FRUIT)
+                //painter.drawPixmap((jeu.vecteurVide[jeu.numFruit]%jeu.getNbCasesX())*largeurCase,((jeu.vecteurVide[jeu.numFruit]-(jeu.vecteurVide[jeu.numFruit]%jeu.getNbCasesX())/jeu.getNbCasesX())*hauteurCase), pixmapFruit);
+                  painter.drawPixmap(pos.x*largeurCase, pos.y*hauteurCase+decalageY, pixmapFruit);
+        // Dessine le serpent
     const list<Position> &snake = jeu.getSnake();
     if (!snake.empty())
     {
@@ -86,6 +88,9 @@ void SnakeWindow::paintEvent(QPaintEvent *)
         for (itSnake=++snake.begin(); itSnake!=snake.end(); itSnake++)
             painter.drawPixmap(itSnake->x*largeurCase, itSnake->y*hauteurCase+decalageY, pixmapCorps);
     }
+    // Disparition du fruit
+
+
 }
 
 void SnakeWindow::keyPressEvent(QKeyEvent *event)
@@ -118,3 +123,25 @@ void SnakeWindow::handleButtonSuppr()
     jeu.suppressionMur();
     update();
 }
+void SnakeWindow::supFruit()
+{
+
+    if (jeu.getSnake().front()==posFruit())
+    {
+        jeu.terrain[posFruit().x*15+posFruit().y]= VIDE;
+        //update();
+
+    }
+
+    update();
+}
+
+ Position SnakeWindow::posFruit()
+ {
+     Position pos;
+      for (pos.y=0;pos.y<jeu.getNbCasesY();pos.y++)
+        for (pos.x=0;pos.x<jeu.getNbCasesX();pos.x++)
+            if (jeu.getCase(pos)==FRUIT)
+                return pos;
+
+ }
