@@ -4,7 +4,7 @@
 #include <list>
 
 typedef enum {VIDE, MUR} Case;
-typedef enum {GAUCHE, DROITE, HAUT, BAS} Direction;
+typedef enum {GAUCHE, DROITE, HAUT, BAS, ARRETE} Direction;
 
 class Position
 {
@@ -31,8 +31,8 @@ class Jeu
 
     Jeu &operator=(const Jeu &);
 
-    bool init();
-    void evolue();
+    bool init(); // Initialiser l'interface du jeu
+    void evolue(); // Mettre à jour le jeu
 
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
