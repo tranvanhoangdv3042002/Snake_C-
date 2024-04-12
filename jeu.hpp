@@ -4,7 +4,7 @@
 #include <list>
 
 typedef enum {VIDE, MUR} Case;
-typedef enum {GAUCHE, DROITE, HAUT, BAS, ARRETE} Direction;
+typedef enum {GAUCHE, DROITE, HAUT, BAS} Direction;
 
 class Position
 {
@@ -22,8 +22,9 @@ class Jeu
     Case *terrain;
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
     std::list<Position> snake;
+    //std::list<posVide> position;
     Direction dirSnake;
-    
+
   public:
     Jeu();
     Jeu(const Jeu &);
@@ -31,8 +32,8 @@ class Jeu
 
     Jeu &operator=(const Jeu &);
 
-    bool init(); // Initialiser l'interface du jeu
-    void evolue(); // Mettre à jour le jeu
+    bool init();
+    void evolue();
 
     // Retourne les dimensions (en nombre de cases)
     int getNbCasesX() const;
@@ -49,6 +50,7 @@ class Jeu
 
     // Modifie la direction
     void setDirection(Direction);
+
     void ajoutMur();
     void suppressionMur();
 };
