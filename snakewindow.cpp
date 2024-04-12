@@ -35,7 +35,15 @@ SnakeWindow::SnakeWindow(QWidget *pParent, Qt::WindowFlags flags):QFrame(pParent
     largeurCase = pixmapMur.width();
     hauteurCase = pixmapMur.height();
 
-    resize(jeu.getNbCasesX()*largeurCase, jeu.getNbCasesY()*hauteurCase); // "Resize" fonction appartient à la classe "QWidget"
+	// Création des boutons, avec "this" pour les mettre dans la fenêtre principale
+    QPushButton *AjoutMur = new QPushButton ("Ajouter Mur",this);
+    QPushButton *SuppMur = new QPushButton ("Supprimer Mur",this);
+
+    // Etablir la géométrie et la dimension des boutons en haut à gauche
+    AjoutMur->setGeometry(QRect(QPoint(largeurCase, 0),QSize(4*largeurCase,hauteurCase)));
+    SuppMur->setGeometry(QRect(QPoint(largeurCase*5, 0),QSize(4*largeurCase,hauteurCase)));
+
+    resize(jeu.getNbCasesX()*largeurCase, (jeu.getNbCasesY()+1)*hauteurCase); // "Resize" fonction appartient à la classe "QWidget"
 }           // Cette fonction permet de redimensionner la taille de l'écran du jeu
 
 
@@ -79,6 +87,8 @@ void SnakeWindow::keyPressEvent(QKeyEvent *event) // Permet de faire le déplace
         jeu.setDirection(HAUT);
     else if (event->key()==Qt::Key_Down)
         jeu.setDirection(BAS);
+	  else if (event->key()==Qt::Key_Backspace)
+        jeu.setDirection(ARRETE);
     update();
 }
 
