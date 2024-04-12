@@ -25,21 +25,23 @@ bool Position::operator!=(const Position &pos) const // L'ajoute de la surcharge
 }
 
 Jeu::Jeu() // Initialiser le contructeur de la classe Jeu
+// Avec le terrain ="nullptr" désignant le pointeur nullpart
 {
     terrain = nullptr; // Type "case" en notant que le terrain est le pointeur
-    largeur = 0; hauteur = 0;
+    largeur = 0; hauteur = 0; // La dimension de l'écran en nombre de pixels
     dirSnake = DROITE; // Type "Direction"
 }
 
-Jeu::Jeu(const Jeu &jeu):snake(jeu.snake) // Mettre en valeur des paramètres (initialiser  avec le constructeur ayant des paramètres
+Jeu::Jeu(const Jeu &jeu):snake(jeu.snake) // Mettre en valeur des paramètres (initialiser  avec le constructeur ayant des paramètres)
+// Le paramètre est la classe "jeu", avec l'attribut est le "snake" de type "list"  
 {
     largeur = jeu.largeur;
     hauteur = jeu.hauteur;
-    dirSnake = jeu.dirSnake;
+    dirSnake = jeu.dirSnake; // Type de "direction"
 
-    if (jeu.terrain!=nullptr) // si on le pointeur "terrain" n'est pas null_part
+    if (jeu.terrain!=nullptr) // si le pointeur "terrain" n'est pas null_part
     {
-        terrain = new Case[largeur*hauteur]; // On crée une tableau dunamique pour contenir les cases d'un terrain 2D de jeu
+        terrain = new Case[largeur*hauteur]; // On crée une tableau dynamique pour contenir les cases d'un terrain 2D de jeu
         for (int c=0; c<largeur*hauteur; c++) // On crée un terrain 2D de jeu (pour chaque case, soit le mur soit vide)
             terrain[c] = jeu.terrain[c];     // en notant que tout d'abord, on crée les cases sur la première ligne, et ensuite la 2e linge...
     }                                       // (ctd, dans le sens du gauche à droite, de haut en bas)
@@ -55,7 +57,7 @@ Jeu::~Jeu() // Destructeur de la classe "Jeu"
 
 Jeu &Jeu::operator=(const Jeu &jeu) // L'opération de l'affectation de la classe "Jeu"
 {
-    if (terrain!=nullptr) // On supprimera d'abord le tableau "terrain" si le le terrain est non_null
+    if (terrain!=nullptr) // On supprimera d'abord le tableau "terrain" si le terrain est non_null
         delete[] terrain;// ça sert à créer un nouveau terrain (on supprime l'ancien)
 
     largeur = jeu.largeur;
@@ -101,7 +103,7 @@ bool Jeu::init() //Initialiser le "Jeu" en utilisant la fonction membre
 	hauteur = 15;
 
 	terrain = new Case[largeur*hauteur]; // Un nouveau terrain sera défini par le tableau dynamique
-
+// sachant que le terrain en un pointeur de type "Case" (la déclaration est déjà fait "Case *terrain")
 	for(y=0;y<hauteur;++y)
 		for(x=0;x<largeur;++x)
             if (terrain_defaut[y][x]=='#')
@@ -124,23 +126,24 @@ bool Jeu::init() //Initialiser le "Jeu" en utilisant la fonction membre
     return true;
 }
 
-void Jeu::evolue()
+void Jeu::evolue() // faire déplacer le serpent en définant le changement lors que
+// l'on appuie les boutons de déplacement
 {
     Position posTest;
 	list<Position>::iterator itSnake;
 
-    int depX[] = {-1, 1, 0, 0};
-    int depY[] = {0, 0, -1, 1};
+    int depX[] = {-1, 1, 0, 0, 0};
+    int depY[] = {0, 0, -1, 1, 0};
 
     posTest.x = snake.front().x + depX[dirSnake]; // La position x de la tête augmente/diminue 1 case lorsque
                                             //la direction du serpent déplace à droite/ à gauche resp (rien de changer la psotion y)
     posTest.y = snake.front().y + depY[dirSnake];//La position y de la tête augmente/diminue 1 case lorsque
-                                            //la direction du serpent déplace en bas/ en haut resp (rien de changer la psotion x)
+                                            //la direction du serpent déplace en bas/ en haut resp (rien de changer la position x)
 
     if (posValide(posTest)) // S'il n'y a pas de collision avec le corps du serpent ou les murs et le serpent est
                         //dans la zône de terrain, on supprimera la queue du serpent et on rajoute la tête pour le déplacement
     {
-        snake.pop_back();
+        snake.pop_back(); 
         snake.push_front(posTest);
     }
 }
@@ -171,7 +174,7 @@ bool Jeu::posValide(const Position &pos) const
 {
     if (pos.x>=0 && pos.x<largeur && pos.y>=0 && pos.y<hauteur
         && terrain[pos.y*largeur+pos.x]==VIDE)// La condition de déplacement  du serpent
-        // il faut que le serpent dépalce sur la zône vide ( pas de mur) et sur le terrain de l'éceran
+        // il faut que le serpent déplace sur la zône vide ( pas de mur) et sur le terrain de l'écran
     {
         list<Position>::const_iterator itSnake;
         itSnake = snake.begin();
@@ -187,18 +190,30 @@ void Jeu::setDirection(Direction dir)
 {
     dirSnake = dir; // Obtenir la direction pour l'élément quelconque du serpent
 }
+
+// Ajoute d'un mur
 void Jeu::ajoutMur()
 {
     Position posMur;
 
     // Trouve une case libre
+	// Tout d'abord, on va créer aléatoirement une postion
+	// Ensuite, on vérifie que si cette position est vide ou n'est pas supervisée
+	//sur le serpent, on va affectuer cette postion à un mur, sinon, on continue
+	// à prendre aléatoirement une autre position
     do {
         posMur.x = rand()%largeur;
         posMur.y = rand()%hauteur;
-    } while (!posValide(posMur));
+    } while (posValide(posMur));
     terrain[posMur.y*largeur+posMur.x]=MUR;
 }
 
+// Suppression d'un mur
+    /* Tout d'abord, on va choisir aléatoirement une postion
+	 Ensuite, on vérifie que si cette position est un mur, 
+ 	 on va affectuer cette postion à une VIDE, 
+   	sinon, on continue à prendre aléatoirement une autre position
+     */
 void Jeu::suppressionMur()
 {
     Position posMur;
