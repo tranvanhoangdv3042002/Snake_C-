@@ -9,11 +9,12 @@ class SnakeWindow : public QFrame
 {
   protected:
     Jeu jeu;
-    QPixmap pixmapCorps, pixmapTete, pixmapMur;
+    QPixmap pixmapCorps, pixmapTete, pixmapMur , pixmapFruit;
     int decalageY;
 
   public:
     SnakeWindow(QWidget *pParent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags());
+    //Position posFruit();
 
   protected:
     void paintEvent(QPaintEvent *);
@@ -21,6 +22,8 @@ class SnakeWindow : public QFrame
     void handleTimer();
     void handleButtonAjout();
     void handleButtonSuppr();
+    void supFruit();
+    Position posFruit();
 };
 
 class SnakeButton : public QPushButton
