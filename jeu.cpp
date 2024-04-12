@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "jeu.hpp"
+#include <vector>
 
 using namespace std;
 
@@ -103,19 +104,33 @@ bool Jeu::init()
 
 	terrain = new Case[largeur*hauteur];
 
+
+
 	for(y=0;y<hauteur;++y)
 		for(x=0;x<largeur;++x)
+           {
+
             if (terrain_defaut[y][x]=='#')
                 terrain[y*largeur+x] = MUR;
+
             else
-                terrain[y*largeur+x] = VIDE;
-                for (int j=0; j<largeur; j++){
-                    for (int j=0; j<largeur; j++){
-                            posVide.push_back(y*largeur+x)
-
-                    }
-
+                {
+                    terrain[y*largeur+x] = VIDE;
+                    vecteurVide.push_back(y*largeur+x);
                 }
+                //for (int j=0; j<largeur; j++){
+              }     // for (int j=0; j<largeur; j++){
+                            //posVide.push_back(y*largeur+x)
+
+               numFruit=rand()%vecteurVide.size();
+                terrain[vecteurVide[numFruit]]=FRUIT;
+
+
+
+
+
+
+
 
     int longueurSerpent = 5;
     snake.clear();
@@ -174,7 +189,7 @@ const list<Position> &Jeu::getSnake() const
 bool Jeu::posValide(const Position &pos) const
 {
     if (pos.x>=0 && pos.x<largeur && pos.y>=0 && pos.y<hauteur
-        && terrain[pos.y*largeur+pos.x]==VIDE)
+        && (terrain[pos.y*largeur+pos.x]==VIDE||terrain[pos.y*largeur+pos.x]==FRUIT))
     {
         list<Position>::const_iterator itSnake;
         itSnake = snake.begin();
@@ -214,3 +229,7 @@ void Jeu::suppressionMur()
     } while (terrain[posMur.y*largeur+posMur.x]!=MUR);
     terrain[posMur.y*largeur+posMur.x]=VIDE;
 }
+
+
+
+
