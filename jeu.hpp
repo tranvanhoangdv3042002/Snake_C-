@@ -21,7 +21,7 @@ class Jeu
   protected:
     //Case *terrain;
     int largeur, hauteur; // Nombre de cases en largeur et en hauteur
-   std::list<Position> snake;
+   std::list<Position> snake;  // c'est une liste
    // std::vector<int> vecteurVide;
     //int numFruit;
 
@@ -29,14 +29,15 @@ class Jeu
     Direction dirSnake;
 
   public:
-    Jeu();
-    Jeu(const Jeu &);
+    Jeu(); // Le constructeur par défaut
+    Jeu(const Jeu &); // Le constructeur de recopie
     ~Jeu();
+
    Case *terrain;
     Jeu &operator=(const Jeu &);
 
-    bool init();
-    void evolue();
+    bool init(); // Initialiser les valeurs des attributs du jeu
+    void evolue(); // Mettre à jour le jeu en changeant la position du serpent
     std::vector<int> vecteurVide;
     int numFruit;
 
